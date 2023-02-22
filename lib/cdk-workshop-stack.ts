@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
 import { HitCounter } from './hitcounter-construct';
-import { ProxyConfiguration } from 'aws-cdk-lib/aws-ecs';
+import {TableViewer} from 'cdk-dynamo-table-viewer';
 export class CdkWorkshopStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -22,6 +22,12 @@ export class CdkWorkshopStack extends cdk.Stack {
     // defines API Gateway rest api resources backed by 'hello' function
     new apigw.LambdaRestApi(this, 'Endpoint', {
       handler: helloWithCounter.handler    // here we assign the hitcounter so it will hit the hitcounter lambda and then the inturn hit the hello lambda
-    })
+    });
+
+    new TableViewer(this, 'ViewHitCounter', {
+      title: 'Hello Hits', 
+      table: helloWithCounter.table,
+      sortBy: '-hits'
+    });
   }
 }

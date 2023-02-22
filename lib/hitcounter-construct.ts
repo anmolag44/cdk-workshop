@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { Lambda } from 'aws-cdk-lib/aws-ses-actions';
 import {Construct} from 'constructs';
 
 export interface HitCounterProps {
@@ -11,6 +10,9 @@ export interface HitCounterProps {
 export class HitCounter extends Construct {
     // allowing access to the counter function **
     public readonly handler: lambda.Function; 
+
+    // Allowing the table to be exposed 
+    public readonly table: cdk.aws_dynamodb.Table;
 
     constructor(scope: Construct, id: string, props: HitCounterProps){
         super(scope, id);
@@ -28,6 +30,7 @@ export class HitCounter extends Construct {
                 HITS_TABLE_NAME: table.tableName
             }
         });
+        this.table = table;
 
         // granting the lambda read write permissions to the table
         table.grantReadWriteData(this.handler);
