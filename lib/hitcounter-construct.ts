@@ -19,8 +19,9 @@ export class HitCounter extends Construct {
     
         const table = new cdk.aws_dynamodb.Table(this, 'Hits', {
             partitionKey: {name: 'path', type: cdk.aws_dynamodb.AttributeType.STRING}  // creating a db resource with path as partition key 
+            ,removalPolicy: cdk.RemovalPolicy.DESTROY
         });
-
+        
         this.handler = new lambda.Function(this, 'HitCounterHandler', {
             runtime: lambda.Runtime.NODEJS_14_X,  
             code: lambda.Code.fromAsset('lambda'),
